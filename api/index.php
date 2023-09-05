@@ -1,4 +1,8 @@
-<?php require __DIR__ . "/includes/header.php";  ?>
+<?php require __DIR__ . "/includes/header.php";
+ //fetching available jobs to display them in ul 
+      require dirname(__DIR__) . "/src/service/index-service.php";
+  ?>
+
 
 
 
@@ -13,41 +17,42 @@
               <h1 class="text-white font-weight-bold">The Easiest Way To Get Your Dream Job</h1>
               <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate est, consequuntur perferendis.</p>
             </div>
-            <form method="post" class="search-jobs-form">
+            <form method="post" action="search.php" class="search-jobs-form">
               <div class="row mb-5">
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                  <input type="text" class="form-control form-control-lg" placeholder="Job title, Company...">
+                  <input type="text" name="job_title" class="form-control form-control-lg" placeholder="Job title">
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                  <select class="selectpicker" data-style="btn-white btn-lg" data-width="100%" data-live-search="true" title="Select Region">
+                  <!-- <select name="job_location" class="selectpicker" data-style="btn-white btn-lg" data-width="100%" data-live-search="true" title="Select Location">
                     <option>Anywhere</option>
-                    <option>San Francisco</option>
-                    <option>Palo Alto</option>
+                    <option>London</option>
+                    <option>Berlin</option>
                     <option>New York</option>
-                    <option>Manhattan</option>
-                    <option>Ontario</option>
+                    <option>Zagreb</option>
+                    <option>Madrid</option>
                     <option>Toronto</option>
                     <option>Kansas</option>
                     <option>Mountain View</option>
-                  </select>
+                  </select> -->
+                  <input type="text" name="job_location" class="form-control form-control-lg" placeholder="Job location">
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                  <select class="selectpicker" data-style="btn-white btn-lg" data-width="100%" data-live-search="true" title="Select Job Type">
+                  <select name="job_type" class="selectpicker" data-style="btn-white btn-lg" data-width="100%" data-live-search="true" title="Select Job Type">
                     <option>Part Time</option>
                     <option>Full Time</option>
                   </select>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                  <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Search Job</button>
+                  <button name="search_submit" type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Search Job</button>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-12 popular-keywords">
                   <h3>Trending Keywords:</h3>
                   <ul class="keywords list-unstyled m-0 p-0">
-                    <li><a href="#" class="">UI Designer</a></li>
-                    <li><a href="#" class="">Python</a></li>
-                    <li><a href="#" class="">Developer</a></li>
+                    <?php foreach ($trending_keywords as $keyword): ?>
+                      <li><a href="#" class=""><?php echo $keyword->{'keyword'}; ?></a></li>
+                    <?php endforeach; ?>
                   </ul>
                 </div>
               </div>
@@ -106,166 +111,49 @@
     </section>
 
     
-
+   <!-- Job listings section-->
     <section class="site-section">
       <div class="container">
 
         <div class="row mb-5 justify-content-center">
           <div class="col-md-7 text-center">
-            <h2 class="section-title mb-2">43,167 Job Listed</h2>
+            <h2 class="section-title mb-2"><?php echo $jobs_count->{'job_count'};  ?> Job Listed</h2>
           </div>
         </div>
         
         <ul class="job-listings mb-5">
+          <?php foreach ( $jobs as $job) :  ?>
           <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-            <a href="job-single.html"></a>
+            <a href="<?php echo ImportantConstants::APPURL; ?>job-single.php?job_id=<?php echo $job->{'id'}; ?>"></a>
             <div class="job-listing-logo">
-              <img src="images/job_logo_1.jpg" alt="Free Website Template by Free-Template.co" class="img-fluid">
+              <img src="users/users-images/<?php echo $job->{'company_image'}; ?>" alt="Free Website Template by Free-Template.co" class="img-fluid">
             </div>
 
             <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
               <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                <h2>Product Designer</h2>
-                <strong>Adidas</strong>
+                <h2><?php echo $job->{'job_title'}; ?></h2>
+                <strong><?php echo $job->{'company_name'}; ?></strong>
               </div>
               <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-                <span class="icon-room"></span> New York, New York
+                <span class="icon-room"></span> <?php echo $job->{'job_location'}; ?>
               </div>
               <div class="job-listing-meta">
-                <span class="badge badge-danger">Part Time</span>
+                <span class="badge badge-<?php if (($job->{'job_type'}) == 'Part Time') {
+                    echo 'danger';} else {echo 'success';}  ?>"><?php echo $job->{'job_type'};   ?></span>
               </div>
             </div>
+           <br>
             
           </li>
-          <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-            <a href="job-single.html"></a>
-            <div class="job-listing-logo">
-              <img src="images/job_logo_2.jpg" alt="Free Website Template by Free-Template.co" class="img-fluid">
-            </div>
-
-            <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-              <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                <h2>Digital Marketing Director</h2>
-                <strong>Sprint</strong>
-              </div>
-              <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-                <span class="icon-room"></span> Overland Park, Kansas 
-              </div>
-              <div class="job-listing-meta">
-                <span class="badge badge-success">Full Time</span>
-              </div>
-            </div>
-          </li>
-
-          <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-            <a href="job-single.html"></a>
-            <div class="job-listing-logo">
-              <img src="images/job_logo_3.jpg" alt="Free Website Template by Free-Template.co" class="img-fluid">
-            </div>
-
-            <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-              <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                <h2>Back-end Engineer (Python)</h2>
-                <strong>Amazon</strong>
-              </div>
-              <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-                <span class="icon-room"></span> Overland Park, Kansas 
-              </div>
-              <div class="job-listing-meta">
-                <span class="badge badge-success">Full Time</span>
-              </div>
-            </div>
-          </li>
-
-          <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-            <a href="job-single.html"></a>
-            <div class="job-listing-logo">
-              <img src="images/job_logo_4.jpg" alt="Free Website Template by Free-Template.co" class="img-fluid">
-            </div>
-
-            <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-              <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                <h2>Senior Art Director</h2>
-                <strong>Microsoft</strong>
-              </div>
-              <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-                <span class="icon-room"></span> Anywhere 
-              </div>
-              <div class="job-listing-meta">
-                <span class="badge badge-success">Full Time</span>
-              </div>
-            </div>
-          </li>
-
-          <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-            <a href="job-single.html"></a>
-            <div class="job-listing-logo">
-              <img src="images/job_logo_5.jpg" alt="Free Website Template by Free-Template.co" class="img-fluid">
-            </div>
-
-            <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-              <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                <h2>Product Designer</h2>
-                <strong>Puma</strong>
-              </div>
-              <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-                <span class="icon-room"></span> San Mateo, CA 
-              </div>
-              <div class="job-listing-meta">
-                <span class="badge badge-success">Full Time</span>
-              </div>
-            </div>
-          </li>
-          <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-            <a href="job-single.html"></a>
-            <div class="job-listing-logo">
-              <img src="images/job_logo_1.jpg" alt="Free Website Template by Free-Template.co" class="img-fluid">
-            </div>
-
-            <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-              <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                <h2>Product Designer</h2>
-                <strong>Adidas</strong>
-              </div>
-              <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-                <span class="icon-room"></span> New York, New York
-              </div>
-              <div class="job-listing-meta">
-                <span class="badge badge-danger">Part Time</span>
-              </div>
-            </div>
-            
-          </li>
-          <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-            <a href="job-single.html"></a>
-            <div class="job-listing-logo">
-              <img src="images/job_logo_2.jpg" alt="Free Website Template by Free-Template.co" class="img-fluid">
-            </div>
-
-            <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-              <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-                <h2>Digital Marketing Director</h2>
-                <strong>Sprint</strong>
-              </div>
-              <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-                <span class="icon-room"></span> Overland Park, Kansas 
-              </div>
-              <div class="job-listing-meta">
-                <span class="badge badge-success">Full Time</span>
-              </div>
-            </div>
-          </li>
-
           
-
+          <?php endforeach;  ?>
           
         </ul>
-
-     
 
       </div>
     </section>
 
+  <!-- lokking for a job section-->
     <section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('images/hero_1.jpg');">
       <div class="container">
         <div class="row align-items-center">
@@ -274,7 +162,8 @@
             <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci impedit.</p>
           </div>
           <div class="col-md-3 ml-auto">
-            <a href="#" class="btn btn-warning btn-block btn-lg">Sign Up</a>
+            <a href="<?php ImportantConstants::APPURL; ?>login.php" class="btn btn-warning btn-block btn-lg">Sign In</a>
+            <a href="<?php ImportantConstants::APPURL; ?>register.php" class="btn btn-warning btn-block btn-lg">Sign Up</a>
           </div>
         </div>
       </div>

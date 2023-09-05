@@ -1,39 +1,17 @@
-<?php require __DIR__ . "/includes/header.php"; ?>
-
-<?php
-// session user - access denied
-if(isset($_SESSION['username'])) {
-  header("location: ". Database::APPURL ."");
-}
+<?php 
+   require __DIR__ . "/includes/header.php";
+   require dirname(__DIR__) . "/src/service/user/login-service.php";
+ ?>
 
 
-//form for authentication
-if(isset($_POST['submit'])) {
-
-  //checking for empty values in form
-  if ( empty($_POST['email']) OR empty($_POST['userpassword'])) {
-    echo "<script>alert('Some of inputs are empty, please fill them out and try again.');</script>";
-  } else {
-
-    $email = $_POST['email'];
-    $user_password = $_POST['userpassword'];
-
-    //authentication
-    $authentication = new UserGateway($database);
-    $authentication->getAuthenticated($email, $user_password);
-
-  }
-}
-
-?>
     <!-- HOME -->
-    <section class="section-hero overlay inner-page bg-image" style="background-image: url('<?php echo Database::APPURL; ?>images/hero_1.jpg');" id="home-section">
+    <section class="section-hero overlay inner-page bg-image" style="background-image: url('<?php echo ImportantConstants::APPURL; ?>images/hero_1.jpg');" id="home-section">
       <div class="container">
         <div class="row">
           <div class="col-md-7">
             <h1 class="text-white font-weight-bold">Log In</h1>
             <div class="custom-breadcrumbs">
-              <a href="<?php echo Database::APPURL;  ?>">Home</a> <span class="mx-2 slash">/</span>
+              <a href="<?php echo ImportantConstants::APPURL; ?>">Home</a> <span class="mx-2 slash">/</span>
               <span class="text-white"><strong>Log In</strong></span>
             </div>
           </div>

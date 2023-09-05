@@ -1,7 +1,7 @@
 <?php
 class Database {
 
-    public const APPURL = "http://localhost/newApps/udemy/jobboard/api/";
+    
 
     private ?PDO $conn = null;
 

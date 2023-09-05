@@ -2,7 +2,7 @@
 
 class UserGateway {
      //connection to db
-     private PDO $conn;
+     protected  PDO $conn;
      public function __construct(Database $database) 
      {
          $this->conn = $database->getConnectionToDb();
@@ -67,10 +67,13 @@ class UserGateway {
 
                 //initializing session variables 
                 $_SESSION['username'] = $data['username'];
+                $_SESSION['email'] = $data['email'];
                 $_SESSION['user_id'] = $data['id'];
+                $_SESSION['cv'] = $data['cv'];
                 $_SESSION['type_of_user'] = $data['typeofemp'];
+                $_SESSION['image'] = $data['u_image'];
             
-                header("location: ". Database::APPURL ."");
+                header("location: ". ImportantConstants::APPURL ."");
                 
         
                 
@@ -102,11 +105,35 @@ class UserGateway {
          return $stmt->fetch(PDO::FETCH_OBJ);
  
      }
+     
+     //fetching users object array by type
+     public function fetchUserByType(string $type) : array | false {
+
+        $sql = "SELECT * FROM users WHERE typeofemp='$type'";
+        $stmt = $this->conn->query($sql);
+        
+        $stmt->execute();
+        
+        //fetching data & checking for row
+         return $stmt->fetchAll(PDO::FETCH_OBJ);
+     }
+
+     //counting all user row returned while checking type 
+     public function countAllUsersByType (string $type) : object {
+
+        $sql = "SELECT COUNT(*) as user_count FROM users WHERE typeofemp='$type'";
+        $stmt = $this->conn->query($sql);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    
+    }
+
+
 
 
      //updating user record in db
      public function updateUser (int $id)  {
-
         $userRow = $this->fetchUser($id);
 
          //variables i directories for files
@@ -119,12 +146,12 @@ class UserGateway {
          $image = $_FILES['u_image']['name'];
 
     
-
+         
          $userRow->typeofemp === "Employee" ? $title = $_POST['title'] : $title = null;
          $userRow->typeofemp === "Employee" ? $cv = $_FILES['cv']['name'] : $cv = null;
  
          $dir_imgs = dirname(__DIR__)  . '/api/users/users-images/' . basename($image);
-         $dir_cvs = dirname(__DIR__) . '/api/users/users-cvs/' . basename($cv);
+         $userRow->typeofemp === "Employee" ? $dir_cvs = dirname(__DIR__) . '/api/users/users-cvs/' . basename($cv) : $dir_cvs = '/';
 
         
         //sql statement
@@ -172,18 +199,17 @@ class UserGateway {
                 $stmt->bindValue(":cv", $userRow->cv, PDO::PARAM_STR);
             }
 
-        
-        
-        
+
          $stmt->execute();
+
         
 
         //files
-    if(move_uploaded_file($_FILES['u_image']['tmp_name'], $dir_imgs) OR move_uploaded_file($_FILES['cv']['tmp_name'], $dir_cvs) )  {
-            header("location: ". Database::APPURL ."");
+    if(move_uploaded_file($_FILES['u_image']['tmp_name'], $dir_imgs) OR move_uploaded_file(isset($_FILES['cv']) ? $_FILES['cv']['tmp_name'] : '', $dir_cvs) )  {
+            header("location: ". ImportantConstants::APPURL ."");
        
      } else {
-        header("location: ". Database::APPURL ."profile.php?id=$id");
+        header("location: ". ImportantConstants::APPURL ."profile.php?id=$id");
      }
 
     }

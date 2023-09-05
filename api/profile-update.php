@@ -1,42 +1,6 @@
-<?php require __DIR__ . "/includes/header.php"; ?>
-
-<?php
-// unsession user - access denied
-if(!isset($_SESSION['username'])) {
-  header("location: ". Database::APPURL ."");
-} 
-
-//checking for update credentials
-if(isset($_GET['upd_id'])) {
-
-    //extracting data from db about user for displaying them in form
-    $id = $_GET['upd_id'];
-
-    if( $_SESSION['user_id'] != $_GET['upd_id'] ) {
-     header("location: ". Database::APPURL ."");
-     } 
-
-    $user_gateway= new UserGateway($database);
-    $user = $user_gateway->fetchUser($id);
-
-       
-   if (isset($_POST['submit'])) {
-         //checking for fileds- username and email
-        if( empty($_POST['username']) OR empty($_POST['email'])) {
-            echo "<script>alert('Username or email are empty!');</script>";
-
-        } else {
-
-         //updating data for user
-         $user_gateway->updateUser($id);
-       
-    }
-}
-
-} else {
-    http_response_code(404);
-    header("location: ". Database::APPURL ."");
-}
+<?php 
+   require __DIR__ . "/includes/header.php"; 
+   require dirname(__DIR__) . "/src/service/user/profile-update-service.php";
 ?>
 
 
@@ -47,13 +11,13 @@ if(isset($_GET['upd_id'])) {
           <div class="col-md-7">
             <h1 class="text-white font-weight-bold">Update profile</h1>
             <div class="custom-breadcrumbs">
-              <a href="<?php echo Database::APPURL;  ?>">Home</a> <span class="mx-2 slash">/</span>
+              <a href="<?php echo ImportantConstants::APPURL; ?>">Home</a> <span class="mx-2 slash">/</span>
               <span class="text-white"><strong><?php echo $_SESSION['username'];   ?></strong></span>
             </div>
           </div>
         </div>
       </div>
-    </section>
+</section>
 
 
 <!-- Form section -->
@@ -164,10 +128,10 @@ if(isset($_GET['upd_id'])) {
               <p class="mb-4">Update your profile on this page</p>
 
               <p class="mb-0 font-weight-bold">User public profile</p>
-              <p class="mb-4"><a href="<?php echo $database::APPURL ?>profile.php?id=<?php echo $_SESSION['user_id'] ?>"><?php echo $user->{'username'}; ?></a></p>
+              <p class="mb-4"><a href="<?php echo ImportantConstants::APPURL; ?>profile.php?id=<?php echo $_SESSION['user_id'] ?>"><?php echo $user->{'username'}; ?></a></p>
 
               <p class="mb-0 font-weight-bold">Email Address</p>
-              <p class="mb-0"><a href="<?php echo $database::APPURL ?>profile.php?id=<?php echo $_SESSION['user_id'] ?>"><?php echo $user->{'email'}; ?></a></p>
+              <p class="mb-0"><a href="<?php echo ImportantConstants::APPURL; ?>profile.php?id=<?php echo $_SESSION['user_id'] ?>"><?php echo $user->{'email'}; ?></a></p>
 
             </div>
           </div>
